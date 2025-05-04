@@ -1,0 +1,777 @@
+openapi: 3.0.0
+info:
+  title: API DB
+  version: 1.0.0
+  description: >
+    Documentación de la API para poryecto DB
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+
+tags:
+  - name: Usuarios
+    description: Operaciones relacionadas a usuarios
+  - name: Menu
+    description: Gestión del menú de platillos
+  - name: Ordenes
+    description: Gestión de órdenes de comida
+  - name: Reseñas
+    description: Opiniones de los usuarios sobre pedidos
+  - name: Sucursales
+    description: Información de las sucursales disponibles
+  - name: Utils
+    description: Operaciones genéricas sobre cualquier colección (count, aggregate, etc.)
+
+paths:
+  /DB/usuarios:
+    get:
+      tags: [Usuarios]
+      summary: Obtener todos los usuarios
+      responses:
+        200:
+          description: Lista de usuarios
+    post:
+      tags: [Usuarios]
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        201:
+          description: Usuario creado
+    put:
+      tags: [Usuarios]
+      summary: Actualizar múltiples usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Usuario'
+      responses:
+        200:
+          description: Usuarios actualizados
+    delete:
+      tags: [Usuarios]
+      summary: Eliminar múltiples usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Usuarios eliminados
+  /DB/usuarios/{id}:
+    get:
+      tags: [Usuarios]
+      summary: Obtener usuario por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Usuario encontrado
+    put:
+      tags: [Usuarios]
+      summary: Actualizar usuario por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        200:
+          description: Usuario actualizado
+    delete:
+      tags: [Usuarios]
+      summary: Eliminar usuario por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Usuario eliminado
+  /DB/menu:
+    get:
+      tags: [Menu]
+      summary: Obtener todos los platillos
+      responses:
+        200:
+          description: Lista de platillos
+    post:
+      tags: [Menu]
+      summary: Crear un nuevo platillo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+      responses:
+        201:
+          description: Platillo creado
+    put:
+      tags: [Menu]
+      summary: Actualizar múltiples platillos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Menu'
+      responses:
+        200:
+          description: Platillos actualizados
+    delete:
+      tags: [Menu]
+      summary: Eliminar múltiples platillos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Platillos eliminados
+  /DB/menu/{id}:
+    get:
+      tags: [Menu]
+      summary: Obtener platillo por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Platillo encontrado
+    put:
+      tags: [Menu]
+      summary: Actualizar platillo por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+      responses:
+        200:
+          description: Platillo actualizado
+    delete:
+      tags: [Menu]
+      summary: Eliminar platillo por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Platillo eliminado
+  
+  /DB/ordenes:
+    get:
+      tags: [Ordenes]
+      summary: Obtener todas las órdenes
+      responses:
+        200:
+          description: Lista de órdenes
+    post:
+      tags: [Ordenes]
+      summary: Crear una nueva orden
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Orden'
+      responses:
+        201:
+          description: Orden creada
+    put:
+      tags: [Ordenes]
+      summary: Actualizar múltiples órdenes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Orden'
+      responses:
+        200:
+          description: Órdenes actualizadas
+    delete:
+      tags: [Ordenes]
+      summary: Eliminar múltiples órdenes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Órdenes eliminadas
+  /DB/ordenes/{id}:
+    get:
+      tags: [Ordenes]
+      summary: Obtener orden por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Orden encontrada
+    put:
+      tags: [Ordenes]
+      summary: Actualizar orden por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Orden'
+      responses:
+        200:
+          description: Orden actualizada
+    delete:
+      tags: [Ordenes]
+      summary: Eliminar orden por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Orden eliminada
+  
+  /DB/resenas:
+    get:
+      tags: [Reseñas]
+      summary: Obtener todas las reseñas
+      responses:
+        200:
+          description: Lista de reseñas
+    post:
+      tags: [Reseñas]
+      summary: Crear una nueva reseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resena'
+      responses:
+        201:
+          description: Reseña creada
+    put:
+      tags: [Reseñas]
+      summary: Actualizar múltiples reseñas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Resena'
+      responses:
+        200:
+          description: Reseñas actualizadas
+    delete:
+      tags: [Reseñas]
+      summary: Eliminar múltiples reseñas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Reseñas eliminadas
+  /DB/resenas/{id}:
+    get:
+      tags: [Reseñas]
+      summary: Obtener reseña por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Reseña encontrada
+    put:
+      tags: [Reseñas]
+      summary: Actualizar reseña por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resena'
+      responses:
+        200:
+          description: Reseña actualizada
+    delete:
+      tags: [Reseñas]
+      summary: Eliminar reseña por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Reseña eliminada
+  
+  /DB/sucursales:
+    get:
+      tags: [Sucursales]
+      summary: Obtener todas las sucursales
+      responses:
+        200:
+          description: Lista de sucursales
+    post:
+      tags: [Sucursales]
+      summary: Crear una nueva sucursal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sucursal'
+      responses:
+        201:
+          description: Sucursal creada
+    put:
+      tags: [Sucursales]
+      summary: Actualizar múltiples sucursales
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Sucursal'
+      responses:
+        200:
+          description: Sucursales actualizadas
+    delete:
+      tags: [Sucursales]
+      summary: Eliminar múltiples sucursales
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Sucursales eliminadas
+  /DB/sucursales/{id}:
+    get:
+      tags: [Sucursales]
+      summary: Obtener sucursal por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Sucursal encontrada
+    put:
+      tags: [Sucursales]
+      summary: Actualizar sucursal por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sucursal'
+      responses:
+        200:
+          description: Sucursal actualizada
+    delete:
+      tags: [Sucursales]
+      summary: Eliminar sucursal por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Sucursal eliminada
+
+  /DB/utils/{coleccion}/count:
+    get:
+      tags: [Utils]
+      summary: Contar documentos por colección
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Conteo total
+  /DB/utils/{coleccion}/distinct:
+    get:
+      tags: [Utils]
+      summary: Obtener valores únicos
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: campo
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Valores únicos del campo
+  /DB/utils/{coleccion}/aggregate:
+    post:
+      tags: [Utils]
+      summary: Ejecutar agregaciones sobre cualquier colección
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+      responses:
+        200:
+          description: Resultado de agregación
+  /DB/utils/{coleccion}/{id}/push:
+    put:
+      tags: [Utils]
+      summary: Agregar elemento a un arreglo
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Elemento agregado
+  /DB/utils/{coleccion}/{id}/pull:
+    put:
+      tags: [Utils]
+      summary: Eliminar elemento de un arreglo
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Elemento eliminado
+
+components:
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        nombre:
+          type: string
+          example: Juan Pérez
+        correo:
+          type: string
+          example: juan@example.com
+        contraseña:
+          type: string
+          example: secret1234
+        telefono:
+          type: string
+          example: 1234-5678
+        direccion:
+          type: object
+          properties:
+            calle:
+              type: string
+              example: 5ta Avenida 10-20 zona 10
+            zona:
+              type: integer
+              example: 10
+            municipio:
+              type: string
+              example: Guatemala
+        rol:
+          type: string
+          example: cliente
+        activo:
+          type: boolean
+          example: true
+        fechaRegistro:
+          type: string
+          format: date-time
+          example: 2023-11-10T14:00:00Z
+
+    Menu:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        nombre:
+          type: string
+          example: Pasta Alfredo
+        descripcion:
+          type: string
+          example: Pasta con crema y queso parmesano
+        precio:
+          type: number
+          example: 75.5
+        categoria:
+          type: string
+          example: Plato fuerte
+        disponible:
+          type: boolean
+          example: true
+        ingredientes:
+          type: array
+          items:
+            type: string
+          example: ["pasta", "queso", "crema"]
+        vegana:
+          type: boolean
+          example: false
+        fechaCreacion:
+          type: string
+          format: date-time
+          example: 2024-11-15T10:00:00Z
+
+    Orden:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        usuarioId:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        restauranteId:
+          type: string
+          example: 6638be3ac0d8ef34f8a79e11
+        platillos:
+          type: array
+          items:
+            type: object
+            properties:
+              platilloId:
+                type: string
+              nombre:
+                type: string
+              cantidad:
+                type: integer
+              precioUnitario:
+                type: number
+        estado:
+          type: string
+          example: preparando
+        metodoPago:
+          type: string
+          example: efectivo
+        fecha:
+          type: string
+          format: date-time
+          example: 2024-12-01T13:00:00Z
+        notas:
+          type: string
+          example: Sin cebolla, por favor
+
+    Resena:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        usuarioId:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        ordenId:
+          type: string
+          example: 6640aa34b7f6a43dc7899bc2
+        calificacion:
+          type: integer
+          example: 5
+        comentario:
+          type: string
+          example: Excelente comida y entrega rápida
+        fecha:
+          type: string
+          format: date-time
+          example: 2025-01-01T14:30:00Z
+        respuestas:
+          type: array
+          items:
+            type: object
+            properties:
+              adminId:
+                type: string
+              mensaje:
+                type: string
+              fechaRespuesta:
+                type: string
+                format: date-time
+
+    Sucursal:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6639ab12c0d8ef34f8a7b412
+        nombre:
+          type: string
+          example: Sucursal Zona 10
+        ubicacion:
+          type: object
+          properties:
+            ciudad:
+              type: string
+              example: Guatemala
+            zona:
+              type: integer
+              example: 10
+            direccion:
+              type: string
+              example: 10a avenida 3-45 zona 10
+        telefono:
+          type: string
+          example: 2270-9988
+        horario:
+          type: string
+          example: Lunes a Sábado de 8am a 6pm
+        fechaApertura:
+          type: string
+          format: date-time
+          example: 2023-07-15T10:00:00Z

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/menuController');
+const controller = require('../controller/menucontroller');
 
 // Obtener todos los elementos con filtros, proyección, ordenamiento y paginación
 router.get('/', controller.getAll);

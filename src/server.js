@@ -8,4 +8,5 @@ connectDB();
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🗒️ swagger corriendo en http://localhost:${PORT}/api-docs`);
 });

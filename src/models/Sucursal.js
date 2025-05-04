@@ -12,4 +12,5 @@ const SucursalSchema = new mongoose.Schema({
   fecha_apertura: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Sucursal', SucursalSchema);
+module.exports = mongoose.model('Sucursal', SucursalSchema, 'sucursales');
+
