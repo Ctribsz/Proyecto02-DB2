@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const usuariosRoutes = require('./usuarios');
-const menuRoutes = require('./menu');
-const ordenesRoutes = require('./ordenes');
-const resenasRoutes = require('./resenas');
-const sucursalesRoutes = require('./sucursales');
+const menuRoutes = require('./menu_route');
+const ordenesRoutes = require('./orden_route');
+const resenasRoutes = require('./resenas_route');
+const sucursalesRoutes = require('./sucursales_route');
 router.get('/', (req, res) => {
   res.json({ mensaje: 'API funcionando 🚀' });
 });
