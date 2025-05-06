@@ -14,11 +14,11 @@ const authRoutes = require('./auth_route'); // sin protección
 router.use('/auth', authRoutes);
 
 // Rutas protegidas
-router.use('/utils', verifyToken, utilsRoutes);
-router.use('/sucursales', verifyToken, sucursalesRoutes);
-router.use('/ordenes', verifyToken, ordenesRoutes);
-router.use('/usuarios', verifyToken, usuariosRoutes);
-router.use('/menu', verifyToken, menuRoutes);
-router.use('/resenas', verifyToken, resenasRoutes);
+router.use('/utils', utilsRoutes);
+router.use('/sucursales', sucursalesRoutes);
+router.use('/ordenes', ordenesRoutes);
+router.use('/usuarios', usuariosRoutes);
+router.use('/menu', menuRoutes);
+router.use('/resenas', resenasRoutes);
 
 module.exports = router;
