@@ -25,4 +25,4 @@ const OrdenSchema = new mongoose.Schema({
   notas: { type: String }
 });
 
-module.exports = mongoose.model('Orden', OrdenSchema);
+module.exports = mongoose.model('Ordenes', OrdenSchema);
