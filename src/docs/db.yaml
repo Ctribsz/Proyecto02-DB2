@@ -30,7 +30,7 @@ paths:
       tags: [Usuarios]
       summary: Obtener todos los usuarios
       responses:
-        200:
+        '200':
           description: Lista de usuarios
     post:
       tags: [Usuarios]
@@ -42,8 +42,26 @@ paths:
             schema:
               $ref: '#/components/schemas/Usuario'
       responses:
-        201:
+        '201':
           description: Usuario creado
+
+  /DB/usuarios/bulk-create:
+    post:
+      tags: [Usuarios]
+      summary: Crear múltiples usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Usuario'
+      responses:
+        '201':
+          description: Usuarios creados
+
+  /DB/usuarios/bulk-update:
     put:
       tags: [Usuarios]
       summary: Actualizar múltiples usuarios
@@ -54,10 +72,12 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Usuario'
+                $ref: '#/components/schemas/UpdateUsuario'
       responses:
-        200:
+        '200':
           description: Usuarios actualizados
+
+  /DB/usuarios/bulk-delete:
     delete:
       tags: [Usuarios]
       summary: Eliminar múltiples usuarios
@@ -66,15 +86,13 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
+              type: array
+              items:
+                $ref: '#/components/schemas/Filter'
       responses:
-        200:
+        '200':
           description: Usuarios eliminados
+
   /DB/usuarios/{id}:
     get:
       tags: [Usuarios]
@@ -86,7 +104,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Usuario encontrado
     put:
       tags: [Usuarios]
@@ -104,7 +122,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Usuario'
       responses:
-        200:
+        '200':
           description: Usuario actualizado
     delete:
       tags: [Usuarios]
@@ -116,70 +134,15 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Usuario eliminado
-  
-
-  /DB/usuarios/batch:
-    post:
-      tags: [Usuarios]
-      summary: Crear múltiples usuarios
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Usuario'
-      responses:
-        201:
-          description: Usuarios creados
-
-    delete:
-      tags: [Usuarios]
-      summary: Eliminar múltiples usuarios
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                rol: "cliente"
-      responses:
-        200:
-          description: Usuarios eliminados
-    
-    put:
-      tags: [Usuarios]
-      summary: Actualizar múltiples usuarios
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                filtro:
-                  type: object
-                  example:
-                    rol: "cliente"
-                datos:
-                  type: object
-                  example:
-                    activo: false
-      responses:
-        200:
-          description: Usuarios actualizados
-
 
   /DB/menu:
     get:
       tags: [Menu]
       summary: Obtener todos los platillos
       responses:
-        200:
+        '200':
           description: Lista de platillos
     post:
       tags: [Menu]
@@ -191,8 +154,26 @@ paths:
             schema:
               $ref: '#/components/schemas/Menu'
       responses:
-        201:
+        '201':
           description: Platillo creado
+
+  /DB/menu/bulk-create:
+    post:
+      tags: [Menu]
+      summary: Crear múltiples platillos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Menu'
+      responses:
+        '201':
+          description: Platillos creados
+
+  /DB/menu/bulk-update:
     put:
       tags: [Menu]
       summary: Actualizar múltiples platillos
@@ -203,10 +184,27 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Menu'
+                type: object
+                properties:
+                  filter:
+                    type: object
+                    description: Criterio para seleccionar platillos a actualizar
+                    additionalProperties: true
+                  data:
+                    type: object
+                    description: Campos y valores a actualizar
+                    additionalProperties: true
+                  upsert:
+                    type: boolean
+                    description: Crear si no existe (opcional)
+                required:
+                  - filter
+                  - data
       responses:
-        200:
+        '200':
           description: Platillos actualizados
+
+  /DB/menu/bulk-delete:
     delete:
       tags: [Menu]
       summary: Eliminar múltiples platillos
@@ -215,15 +213,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
+              type: array
+              items:
+                type: object
+                description: Filtro para eliminar platillos
+                additionalProperties: true
       responses:
-        200:
+        '200':
           description: Platillos eliminados
+
   /DB/menu/{id}:
     get:
       tags: [Menu]
@@ -235,7 +233,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Platillo encontrado
     put:
       tags: [Menu]
@@ -253,7 +251,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Menu'
       responses:
-        200:
+        '200':
           description: Platillo actualizado
     delete:
       tags: [Menu]
@@ -265,69 +263,15 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Platillo eliminado
-  
-  /DB/menu/batch:
-    post:
-      tags: [Menu]
-      summary: Crear múltiples platillos
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Menu'
-      responses:
-        201:
-          description: Platillos creados
-
-    delete:
-      tags: [Menu]
-      summary: Eliminar múltiples platillos
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                categoria: "Postres"
-      responses:
-        200:
-          description: Platillos eliminados
-    
-    put:
-      tags: [Menu]
-      summary: Actualizar múltiples platillos
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                filtro:
-                  type: object
-                  example:
-                    categoria: "Bebidas"
-                datos:
-                  type: object
-                  example:
-                    disponible: false
-      responses:
-        200:
-          description: Platillos actualizados
-
 
   /DB/ordenes:
     get:
       tags: [Ordenes]
       summary: Obtener todas las órdenes
       responses:
-        200:
+        '200':
           description: Lista de órdenes
     post:
       tags: [Ordenes]
@@ -339,8 +283,26 @@ paths:
             schema:
               $ref: '#/components/schemas/Orden'
       responses:
-        201:
+        '201':
           description: Orden creada
+
+  /DB/ordenes/bulk-create:
+    post:
+      tags: [Ordenes]
+      summary: Crear múltiples órdenes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Orden'
+      responses:
+        '201':
+          description: Órdenes creadas
+
+  /DB/ordenes/bulk-update:
     put:
       tags: [Ordenes]
       summary: Actualizar múltiples órdenes
@@ -351,10 +313,27 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Orden'
+                type: object
+                properties:
+                  filter:
+                    type: object
+                    description: Criterio para seleccionar órdenes a actualizar
+                    additionalProperties: true
+                  data:
+                    type: object
+                    description: Campos y valores a actualizar
+                    additionalProperties: true
+                  upsert:
+                    type: boolean
+                    description: Crear si no existe (opcional)
+                required:
+                  - filter
+                  - data
       responses:
-        200:
+        '200':
           description: Órdenes actualizadas
+
+  /DB/ordenes/bulk-delete:
     delete:
       tags: [Ordenes]
       summary: Eliminar múltiples órdenes
@@ -363,14 +342,13 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
+              type: array
+              items:
+                type: object
+                description: Filtro para eliminar órdenes
+                additionalProperties: true
       responses:
-        200:
+        '200':
           description: Órdenes eliminadas
 
   /DB/ordenes/{id}:
@@ -384,7 +362,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Orden encontrada
     put:
       tags: [Ordenes]
@@ -402,7 +380,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Orden'
       responses:
-        200:
+        '200':
           description: Orden actualizada
     delete:
       tags: [Ordenes]
@@ -414,70 +392,15 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Orden eliminada
-  
-  /DB/ordenes/batch:
-    post:
-      tags: [Ordenes]
-      summary: Crear múltiples órdenes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Orden'
-      responses:
-        201:
-          description: Órdenes creadas correctamente
 
-    put:
-      tags: [Ordenes]
-      summary: Actualizar múltiples órdenes por filtro
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                filtro:
-                  type: object
-                  description: Criterio para seleccionar órdenes a actualizar
-                  example:
-                    estado: pendiente
-                datos:
-                  type: object
-                  description: Nuevos datos a aplicar
-                  example:
-                    estado: preparando
-      responses:
-        200:
-          description: Órdenes actualizadas correctamente
-
-    delete:
-      tags: [Ordenes]
-      summary: Eliminar múltiples órdenes por filtro
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                estado: cancelado
-      responses:
-        200:
-          description: Órdenes eliminadas correctamente
-  
   /DB/resenas:
     get:
       tags: [Reseñas]
       summary: Obtener todas las reseñas
       responses:
-        200:
+        '200':
           description: Lista de reseñas
     post:
       tags: [Reseñas]
@@ -489,8 +412,26 @@ paths:
             schema:
               $ref: '#/components/schemas/Resena'
       responses:
-        201:
+        '201':
           description: Reseña creada
+
+  /DB/resenas/bulk-create:
+    post:
+      tags: [Reseñas]
+      summary: Crear múltiples reseñas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Resena'
+      responses:
+        '201':
+          description: Reseñas creadas
+
+  /DB/resenas/bulk-update:
     put:
       tags: [Reseñas]
       summary: Actualizar múltiples reseñas
@@ -501,10 +442,27 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Resena'
+                type: object
+                properties:
+                  filter:
+                    type: object
+                    description: Criterio para seleccionar reseñas a actualizar
+                    additionalProperties: true
+                  data:
+                    type: object
+                    description: Campos y valores a actualizar
+                    additionalProperties: true
+                  upsert:
+                    type: boolean
+                    description: Crear si no existe (opcional)
+                required:
+                  - filter
+                  - data
       responses:
-        200:
+        '200':
           description: Reseñas actualizadas
+
+  /DB/resenas/bulk-delete:
     delete:
       tags: [Reseñas]
       summary: Eliminar múltiples reseñas
@@ -513,15 +471,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
+              type: array
+              items:
+                type: object
+                description: Filtro para eliminar reseñas
+                additionalProperties: true
       responses:
-        200:
+        '200':
           description: Reseñas eliminadas
+
   /DB/resenas/{id}:
     get:
       tags: [Reseñas]
@@ -533,7 +491,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Reseña encontrada
     put:
       tags: [Reseñas]
@@ -551,7 +509,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Resena'
       responses:
-        200:
+        '200':
           description: Reseña actualizada
     delete:
       tags: [Reseñas]
@@ -563,68 +521,15 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Reseña eliminada
-  /DB/resenas/batch:
-    post:
-      tags: [Reseñas]
-      summary: Crear múltiples reseñas
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Resena'
-      responses:
-        201:
-          description: Reseñas creadas
-
-    delete:
-      tags: [Reseñas]
-      summary: Eliminar múltiples reseñas
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                calificacion: { $lt: 3 }
-      responses:
-        200:
-          description: Reseñas eliminadas
-    
-    put:
-      tags: [Reseñas]
-      summary: Actualizar múltiples reseñas
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                filtro:
-                  type: object
-                  example:
-                    calificacion: { $lt: 4 }
-                datos:
-                  type: object
-                  example:
-                    comentario: "Gracias por tu reseña, la tendremos en cuenta"
-      responses:
-        200:
-          description: Reseñas actualizadas
-
 
   /DB/sucursales:
     get:
       tags: [Sucursales]
       summary: Obtener todas las sucursales
       responses:
-        200:
+        '200':
           description: Lista de sucursales
     post:
       tags: [Sucursales]
@@ -636,8 +541,26 @@ paths:
             schema:
               $ref: '#/components/schemas/Sucursal'
       responses:
-        201:
+        '201':
           description: Sucursal creada
+
+  /DB/sucursales/bulk-create:
+    post:
+      tags: [Sucursales]
+      summary: Crear múltiples sucursales
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Sucursal'
+      responses:
+        '201':
+          description: Sucursales creadas
+
+  /DB/sucursales/bulk-update:
     put:
       tags: [Sucursales]
       summary: Actualizar múltiples sucursales
@@ -648,10 +571,27 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Sucursal'
+                type: object
+                properties:
+                  filter:
+                    type: object
+                    description: Criterio para seleccionar sucursales a actualizar
+                    additionalProperties: true
+                  data:
+                    type: object
+                    description: Campos y valores a actualizar
+                    additionalProperties: true
+                  upsert:
+                    type: boolean
+                    description: Crear si no existe (opcional)
+                required:
+                  - filter
+                  - data
       responses:
-        200:
+        '200':
           description: Sucursales actualizadas
+
+  /DB/sucursales/bulk-delete:
     delete:
       tags: [Sucursales]
       summary: Eliminar múltiples sucursales
@@ -660,15 +600,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
+              type: array
+              items:
+                type: object
+                description: Filtro para eliminar sucursales
+                additionalProperties: true
       responses:
-        200:
+        '200':
           description: Sucursales eliminadas
+
   /DB/sucursales/{id}:
     get:
       tags: [Sucursales]
@@ -680,7 +620,7 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Sucursal encontrada
     put:
       tags: [Sucursales]
@@ -698,7 +638,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Sucursal'
       responses:
-        200:
+        '200':
           description: Sucursal actualizada
     delete:
       tags: [Sucursales]
@@ -710,63 +650,9 @@ paths:
           schema:
             type: string
       responses:
-        200:
+        '200':
           description: Sucursal eliminada
-
-  /DB/sucursales/batch:
-    post:
-      tags: [Sucursales]
-      summary: Crear múltiples sucursales
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Sucursal'
-      responses:
-        201:
-          description: Sucursales creadas
-
-    delete:
-      tags: [Sucursales]
-      summary: Eliminar múltiples sucursales
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                ciudad: "Chimaltenango"
-      responses:
-        200:
-          description: Sucursales eliminadas
-    
-    put:
-      tags: [Sucursales]
-      summary: Actualizar múltiples sucursales
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                filtro:
-                  type: object
-                  example:
-                    ciudad: "Mixco"
-                datos:
-                  type: object
-                  example:
-                    horario: "9:00 a 17:00"
-      responses:
-        200:
-          description: Sucursales actualizadas
-
-
+        
   /DB/utils/{coleccion}/count:
     get:
       tags: [Utils]

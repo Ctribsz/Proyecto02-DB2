@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const MenuSchema = new mongoose.Schema({
-  sucursalId: { type: mongoose.Schema.Types.ObjectId, required: true },
   nombre: { type: String, required: true },
   descripcion: { type: String },
   precio: { type: Number, required: true },
@@ -16,4 +15,4 @@ const MenuSchema = new mongoose.Schema({
   vegana: { type: Boolean, default: false }
 });
 
-module.exports = mongoose.model('Menu', MenuSchema);
+module.exports = mongoose.model('Menu', MenuSchema,'menu');

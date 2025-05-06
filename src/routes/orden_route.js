@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controller/ordencontroller');
 
-router.get('/', controller.getAll);
-router.get('/:id', controller.getOne);
-router.post('/', controller.createOne);
-router.post('/batch', controller.createMany);
-router.put('/:id', controller.updateOne);
-router.put('/batch', controller.updateMany);
-router.delete('/:id', controller.deleteOne);
-router.delete('/batch', controller.deleteMany);
+
+router.post(  '/bulk-create',  controller.bulkCreate);
+router.put(   '/bulk-update',  controller.bulkUpdate);
+router.delete('/bulk-delete',  controller.bulkDelete);
+router.get(   '/',             controller.getAll);
+router.get(   '/:id',          controller.getOne);
+router.post(  '/',             controller.createOne);
+router.put(   '/:id',          controller.updateOne);
+router.delete('/:id',          controller.deleteOne);
 
 module.exports = router;

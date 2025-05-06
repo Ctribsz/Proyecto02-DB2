@@ -52,12 +52,19 @@ exports.createOne = async (req, res) => {
 };
 
 // Crear varias sucursales
-exports.createMany = async (req, res) => {
+exports.bulkCreate = async (req, res) => {
+  const items = req.body;
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: 'El body debe ser un array de sucursales' });
+  }
   try {
-    const result = await Sucursal.insertMany(req.body);
-    res.status(201).json(result);
+    const docs = await Sucursal.insertMany(items, { ordered: false });
+    return res.status(201).json({
+      insertedCount: docs.length,
+      insertedIds: docs.map(d => d._id)
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -79,13 +86,19 @@ exports.updateOne = async (req, res) => {
 };
 
 // Actualizar múltiples sucursales
-exports.updateMany = async (req, res) => {
-  const { filtro, datos } = req.body;
+exports.bulkUpdate = async (req, res) => {
+  const updates = req.body;
+  if (!Array.isArray(updates) || updates.length === 0) {
+    return res.status(400).json({ error: 'El body debe ser un array de {filter, data}' });
+  }
+  const ops = updates.map(({ filter, data, upsert = false }) => ({
+    updateOne: { filter, update: { $set: data }, upsert }
+  }));
   try {
-    const result = await Sucursal.updateMany(filtro, { $set: datos });
-    res.json(result);
+    const result = await Sucursal.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -107,11 +120,16 @@ exports.deleteOne = async (req, res) => {
 };
 
 // Eliminar múltiples sucursales
-exports.deleteMany = async (req, res) => {
+exports.bulkDelete = async (req, res) => {
+  const filters = req.body;
+  if (!Array.isArray(filters) || filters.length === 0) {
+    return res.status(400).json({ error: 'El body debe ser un array de filtros' });
+  }
+  const ops = filters.map(filter => ({ deleteOne: { filter } }));
   try {
-    const result = await Sucursal.deleteMany(req.body);
-    res.json(result);
+    const result = await Sucursal.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };

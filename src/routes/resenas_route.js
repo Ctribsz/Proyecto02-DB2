@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controller/resenascontroller');
 
-router.get('/', controller.getAll);
-router.get('/:id', controller.getOne);
-router.post('/', controller.createOne);
-router.post('/batch', controller.createMany);
-router.put('/:id', controller.updateOne);
-router.put('/batch', controller.updateMany);
-router.delete('/:id', controller.deleteOne);
-router.delete('/batch', controller.deleteMany);
+router.post(   '/bulk-create',  controller.createMany);
+router.put(    '/bulk-update',  controller.updateMany);
+router.delete( '/bulk-delete',  controller.deleteMany);
+router.get(    '/',             controller.getAll);
+router.post(   '/',             controller.createOne);
+router.get(    '/:id',          controller.getOne);
+router.put(    '/:id',          controller.updateOne);
+router.delete( '/:id',          controller.deleteOne);
 
 module.exports = router;

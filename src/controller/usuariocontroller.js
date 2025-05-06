@@ -38,12 +38,27 @@ exports.createOne = async (req, res) => {
   }
 };
 
-exports.createMany = async (req, res) => {
+
+exports.bulkCreate = async (req, res) => {
+  let usuarios = req.body;
+  if (req.body.create && Array.isArray(req.body.create)) {
+    usuarios = req.body.create;
+  }
+  if (!Array.isArray(usuarios) || usuarios.length === 0) {
+    return res.status(400).json({
+      error: 'El cuerpo de la petición debe ser un array de usuarios y no puede estar vacío'
+    });
+  }
   try {
-    const result = await Usuario.insertMany(req.body);
-    res.status(201).json(result);
+    // 3) Insertar
+    const docs = await Usuario.insertMany(usuarios, { ordered: false });
+    return res.status(201).json({
+      insertedCount: docs.length,
+      insertedIds:    docs.map(u => u._id)
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error('🚨 bulkCreate error:', err);
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -57,13 +72,21 @@ exports.updateOne = async (req, res) => {
   }
 };
 
-exports.updateMany = async (req, res) => {
-  const { filtro, datos } = req.body;
+exports.bulkUpdate = async (req, res) => {
+  const updates = req.body;   // esperamos un array de { filter, data, upsert? }
+  const ops = updates.map(({ filter, data, upsert = false }) => ({
+    updateOne: {
+      filter,
+      update: { $set: data },
+      upsert
+    }
+  }));
+
   try {
-    const result = await Usuario.updateMany(filtro, { $set: datos });
-    res.json(result);
+    const result = await Usuario.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -77,11 +100,16 @@ exports.deleteOne = async (req, res) => {
   }
 };
 
-exports.deleteMany = async (req, res) => {
+exports.bulkDelete = async (req, res) => {
+  const filters = req.body;
+  const ops = filters.map(filter => ({
+    deleteOne: { filter }
+  }));
+
   try {
-    const result = await Usuario.deleteMany(req.body);
-    res.json(result);
+    const result = await Usuario.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };

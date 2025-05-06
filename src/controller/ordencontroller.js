@@ -38,12 +38,45 @@ exports.createOne = async (req, res) => {
   }
 };
 
-exports.createMany = async (req, res) => {
+// controller/ordenController.js
+exports.bulkCreate = async (req, res) => {
+  // 1) Datos que llegan
+  console.log('▶ bulkCreate raw body:', JSON.stringify(req.body, null, 2));
+  const orders = Array.isArray(req.body.orders) ? req.body.orders : req.body;
+  console.log('▶ bulkCreate parsed orders:', orders);
+
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return res.status(400).json({ error: 'Body debe ser un array de órdenes' });
+  }
+
   try {
-    const result = await Orden.insertMany(req.body);
-    res.status(201).json(result);
+    // 2) Prueba con rawResult para ver conteos y errores internos
+    const rawResult = await Orden.insertMany(orders, {
+      ordered: false,
+      rawResult: true   // <—— aquí
+    });
+    console.log('🚀 bulkCreate rawResult:', rawResult);
+
+    // 3) Prueba usando el driver nativo (sin pasar por validación Mongoose)
+    const nativeResult = await Orden.collection.insertMany(orders, { ordered: false });
+    console.log('🚀 native insertMany result:', nativeResult);
+
+    // 4) Envía ambos resultados
+    return res.status(201).json({
+      mongooseResult: {
+        insertedCount: rawResult.insertedCount,
+        insertedIds: Object.values(rawResult.insertedIds)
+      },
+      nativeResult: {
+        insertedCount: nativeResult.insertedCount,
+        insertedIds: Object.values(nativeResult.insertedIds)
+      }
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error('🚨 bulkCreate error:', err);
+    // 5) Si falla validación, loguea el esquema para ver sus paths
+    console.log('📑 Orden.schema paths:', Object.keys(Orden.schema.paths));
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -57,13 +90,21 @@ exports.updateOne = async (req, res) => {
   }
 };
 
-exports.updateMany = async (req, res) => {
-  const { filtro, datos } = req.body;
+exports.bulkUpdate = async (req, res) => {
+  const updates = req.body;
+  if (!Array.isArray(updates) || updates.length === 0) {
+    return res.status(400).json({ error: 'Body debe ser un array de objetos {filter, data}' });
+  }
+
+  const ops = updates.map(({ filter, data, upsert = false }) => ({
+    updateOne: { filter, update: { $set: data }, upsert }
+  }));
+
   try {
-    const result = await Orden.updateMany(filtro, { $set: datos });
-    res.json(result);
+    const result = await Orden.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -77,11 +118,18 @@ exports.deleteOne = async (req, res) => {
   }
 };
 
-exports.deleteMany = async (req, res) => {
+exports.bulkDelete = async (req, res) => {
+  const filters = req.body;
+  if (!Array.isArray(filters) || filters.length === 0) {
+    return res.status(400).json({ error: 'Body debe ser un array de filtros' });
+  }
+
+  const ops = filters.map(filter => ({ deleteOne: { filter } }));
+
   try {
-    const result = await Orden.deleteMany(req.body);
-    res.json(result);
+    const result = await Orden.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };

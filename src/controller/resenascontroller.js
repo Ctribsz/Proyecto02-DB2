@@ -38,11 +38,18 @@ exports.createOne = async (req, res) => {
 };
 
 exports.createMany = async (req, res) => {
+  const items = req.body;
+  if (!Array.isArray(items) || items.length === 0)
+    return res.status(400).json({ error: 'body debe ser un array de reseñas' });
+
   try {
-    const result = await Resena.insertMany(req.body);
-    res.status(201).json(result);
+    const docs = await Resena.insertMany(items, { ordered: false });
+    return res.status(201).json({
+      insertedCount: docs.length,
+      insertedIds:   docs.map(d => d._id)
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -57,12 +64,19 @@ exports.updateOne = async (req, res) => {
 };
 
 exports.updateMany = async (req, res) => {
-  const { filtro, datos } = req.body;
+  const updates = req.body; 
+  if (!Array.isArray(updates) || updates.length === 0)
+    return res.status(400).json({ error: 'body debe ser un array de {filter, data}' });
+
+  const ops = updates.map(({ filter, data, upsert = false }) => ({
+    updateOne: { filter, update: { $set: data }, upsert }
+  }));
+
   try {
-    const result = await Resena.updateMany(filtro, { $set: datos });
-    res.json(result);
+    const result = await Resena.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -75,12 +89,32 @@ exports.deleteOne = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.deleteMany = async (req, res) => {
+  const filters = req.body;
+  if (!Array.isArray(filters) || filters.length === 0)
+    return res.status(400).json({ error: 'body debe ser un array de filtros' });
+
+  const ops = filters.map(filter => ({ deleteOne: { filter } }));
+
+  try {
+    const result = await Resena.bulkWrite(ops, { ordered: false });
+    return res.json(result);
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+};
 
 exports.deleteMany = async (req, res) => {
+  const filters = req.body;
+  if (!Array.isArray(filters) || filters.length === 0)
+    return res.status(400).json({ error: 'body debe ser un array de filtros' });
+
+  const ops = filters.map(filter => ({ deleteOne: { filter } }));
+
   try {
-    const result = await Resena.deleteMany(req.body);
-    res.json(result);
+    const result = await Resena.bulkWrite(ops, { ordered: false });
+    return res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
