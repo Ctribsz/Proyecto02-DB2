@@ -44,37 +44,7 @@ paths:
       responses:
         201:
           description: Usuario creado
-    put:
-      tags: [Usuarios]
-      summary: Actualizar múltiples usuarios
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Usuario'
-      responses:
-        200:
-          description: Usuarios actualizados
-    delete:
-      tags: [Usuarios]
-      summary: Eliminar múltiples usuarios
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        200:
-          description: Usuarios eliminados
+
   /DB/usuarios/{id}:
     get:
       tags: [Usuarios]
@@ -193,37 +163,7 @@ paths:
       responses:
         201:
           description: Platillo creado
-    put:
-      tags: [Menu]
-      summary: Actualizar múltiples platillos
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Menu'
-      responses:
-        200:
-          description: Platillos actualizados
-    delete:
-      tags: [Menu]
-      summary: Eliminar múltiples platillos
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        200:
-          description: Platillos eliminados
+
   /DB/menu/{id}:
     get:
       tags: [Menu]
@@ -270,7 +210,7 @@ paths:
   
   /DB/menu/batch:
     post:
-      tags: [Menu]
+      tags: [Menú]
       summary: Crear múltiples platillos
       requestBody:
         required: true
@@ -285,7 +225,7 @@ paths:
           description: Platillos creados
 
     delete:
-      tags: [Menu]
+      tags: [Menú]
       summary: Eliminar múltiples platillos
       requestBody:
         required: true
@@ -298,9 +238,9 @@ paths:
       responses:
         200:
           description: Platillos eliminados
-    
+
     put:
-      tags: [Menu]
+      tags: [Menú]
       summary: Actualizar múltiples platillos
       requestBody:
         required: true
@@ -322,6 +262,7 @@ paths:
           description: Platillos actualizados
 
 
+
   /DB/ordenes:
     get:
       tags: [Ordenes]
@@ -341,37 +282,7 @@ paths:
       responses:
         201:
           description: Orden creada
-    put:
-      tags: [Ordenes]
-      summary: Actualizar múltiples órdenes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Orden'
-      responses:
-        200:
-          description: Órdenes actualizadas
-    delete:
-      tags: [Ordenes]
-      summary: Eliminar múltiples órdenes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        200:
-          description: Órdenes eliminadas
+
 
   /DB/ordenes/{id}:
     get:
@@ -491,37 +402,7 @@ paths:
       responses:
         201:
           description: Reseña creada
-    put:
-      tags: [Reseñas]
-      summary: Actualizar múltiples reseñas
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Resena'
-      responses:
-        200:
-          description: Reseñas actualizadas
-    delete:
-      tags: [Reseñas]
-      summary: Eliminar múltiples reseñas
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        200:
-          description: Reseñas eliminadas
+
   /DB/resenas/{id}:
     get:
       tags: [Reseñas]
@@ -638,37 +519,7 @@ paths:
       responses:
         201:
           description: Sucursal creada
-    put:
-      tags: [Sucursales]
-      summary: Actualizar múltiples sucursales
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Sucursal'
-      responses:
-        200:
-          description: Sucursales actualizadas
-    delete:
-      tags: [Sucursales]
-      summary: Eliminar múltiples sucursales
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        200:
-          description: Sucursales eliminadas
+   
   /DB/sucursales/{id}:
     get:
       tags: [Sucursales]
@@ -732,17 +583,41 @@ paths:
     delete:
       tags: [Sucursales]
       summary: Eliminar múltiples sucursales
+      description: >
+        Elimina múltiples sucursales por sus IDs.
+        Los IDs deben ser cadenas válidas de 24 caracteres hexadecimales.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              example:
-                ciudad: "Chimaltenango"
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    pattern: '^[0-9a-fA-F]{24}$'
+                  example: ["507f1f77bcf86cd799439011", "5f8d04b7b54764421b7156da"]
       responses:
         200:
-          description: Sucursales eliminadas
+          description: Sucursales eliminadas correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  deletedCount:
+                    type: integer
+                  eliminados:
+                    type: array
+                    items:
+                      type: string
+        400:
+          description: IDs inválidos o formato incorrecto
     
     put:
       tags: [Sucursales]
@@ -798,6 +673,7 @@ paths:
       responses:
         200:
           description: Valores únicos del campo
+
   /DB/utils/{coleccion}/aggregate:
     post:
       tags: [Utils]
@@ -819,7 +695,8 @@ paths:
       responses:
         200:
           description: Resultado de agregación
-  /DB/utils/{coleccion}/{id}/push:
+          
+  /DB/utils/{coleccion}/push/{id}:
     put:
       tags: [Utils]
       summary: Agregar elemento a un arreglo
@@ -843,7 +720,7 @@ paths:
       responses:
         200:
           description: Elemento agregado
-  /DB/utils/{coleccion}/{id}/pull:
+  /DB/utils/{coleccion}/pull/{id}:
     put:
       tags: [Utils]
       summary: Eliminar elemento de un arreglo
@@ -867,6 +744,57 @@ paths:
       responses:
         200:
           description: Elemento eliminado
+  
+  /DB/utils/sortAsc/{coleccion}:
+    get:
+      tags: [Utils]
+      summary: Obtener documentos ordenados ascendentemente por un campo numérico
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+          description: Nombre de la colección
+        - in: query
+          name: campo
+          required: true
+          schema:
+            type: string
+          description: Nombre del campo (debe ser de tipo Number)
+      responses:
+        200:
+          description: Lista de documentos ordenados ascendentemente
+        400:
+          description: Campo no proporcionado o no es de tipo Number
+        500:
+          description: Error en el servidor
+
+  /DB/utils/sortDesc/{coleccion}:
+    get:
+      tags: [Utils]
+      summary: Obtener documentos ordenados descendentemente por un campo numérico
+      parameters:
+        - in: path
+          name: coleccion
+          required: true
+          schema:
+            type: string
+          description: Nombre de la colección
+        - in: query
+          name: campo
+          required: true
+          schema:
+            type: string
+          description: Nombre del campo (debe ser de tipo Number)
+      responses:
+        200:
+          description: Lista de documentos ordenados descendentemente
+        400:
+          description: Campo no proporcionado o no es de tipo Number
+        500:
+          description: Error en el servidor
+
   
   /DB/auth/register:
     post:

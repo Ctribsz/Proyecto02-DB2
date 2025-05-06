@@ -16,4 +16,4 @@ const MenuSchema = new mongoose.Schema({
   vegana: { type: Boolean, default: false }
 });
 
-module.exports = mongoose.model('Menu', MenuSchema);
+module.exports = mongoose.model('Menu', MenuSchema,'menu');

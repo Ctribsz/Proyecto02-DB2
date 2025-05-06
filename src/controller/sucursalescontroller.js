@@ -106,12 +106,43 @@ exports.deleteOne = async (req, res) => {
   }
 };
 
-// Eliminar múltiples sucursales
 exports.deleteMany = async (req, res) => {
   try {
-    const result = await Sucursal.deleteMany(req.body);
-    res.json(result);
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids)) {
+      return res.status(400).json({ 
+        error: 'El campo ids debe ser un array',
+        ejemplo: { ids: ["id1", "id2", "id3"] }
+      });
+    }
+
+    const invalidIds = ids.filter(id => 
+      typeof id !== 'string' || !mongoose.Types.ObjectId.isValid(id)
+    );
+    
+    if (invalidIds.length > 0) {
+      return res.status(400).json({ 
+        error: 'IDs inválidos encontrados',
+        invalidIds,
+        mensaje: 'Todos los IDs deben ser strings válidos de 24 caracteres hexadecimales'
+      });
+    }
+
+    const result = await Sucursal.deleteMany({ _id: { $in: ids } });
+    
+    res.json({
+      success: true,
+      deletedCount: result.deletedCount,
+      eliminados: ids,
+      mensaje: `Se eliminaron ${result.deletedCount} sucursales`
+    });
+    
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ 
+      error: 'Error al eliminar las sucursales',
+      detalle: err.message 
+    });
   }
 };
+
