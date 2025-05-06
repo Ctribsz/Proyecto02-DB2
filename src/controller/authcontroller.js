@@ -65,7 +65,20 @@ const register = async (req, res) => {
   try {
     const { nombre, correo, contraseña, telefono, direccion, rol } = req.body;
 
+    // Verificar si ya existe
     const existente = await Usuario.findOne({ correo });
+    let direccionObj = req.body.direccion;
+
+    // Si es string, convertirlo a objeto
+    if (typeof direccionObj === 'string') {
+      const [calle, zonaRaw, municipio] = direccionObj.split(',').map(p => p.trim());
+      direccionObj = {
+        calle,
+        zona: parseInt(zonaRaw?.replace(/\D/g, '')) || 0,
+        municipio
+      };
+    }
+
     if (existente) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado.' });
     }
@@ -77,8 +90,8 @@ const register = async (req, res) => {
       correo,
       contraseña: contraseñaEncriptada,
       telefono,
-      direccion,
-      rol,
+      direccion: direccionObj,
+      rol
     });
 
     await nuevoUsuario.save();
